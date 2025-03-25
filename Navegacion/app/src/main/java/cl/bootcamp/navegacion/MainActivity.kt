@@ -17,7 +17,7 @@ import cl.bootcamp.navegacion.ui.theme.NavegacionTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // enableEdgeToEdge()
         setContent {
             NavegacionTheme {
                 NavManager()
