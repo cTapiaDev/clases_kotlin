@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,12 +30,21 @@ fun AddDetailView(
     viewModel: WishViewModel
 ) {
 
+    val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(viewModel) {
+        viewModel.loadWish(id)
+        viewModel.snackMessage.collect { message ->
+            scaffoldState.snackbarHostState.showSnackbar(message)
+        }
+    }
+
     Scaffold(
         topBar = { AppBarView(
             if (id != 0L) stringResource(R.string.update_wish)
             else stringResource(R.string.add_wish)
         ) { navController.navigateUp() } }
-    ) {
+    ) { it ->
         Column(
             modifier = Modifier
                 .padding(it)
@@ -44,18 +55,22 @@ fun AddDetailView(
             Space()
             WishTextField(
                 label = "Title",
-                value = "",
-                onValueChange = {}
+                value = viewModel.wishTitleState,
+                onValueChange = { viewModel.onChangedTitle(it) }
             )
             Space()
             WishTextField(
                 label = "Description",
-                value = "",
-                onValueChange = {}
+                value = viewModel.wishDescriptionState,
+                onValueChange = { viewModel.onChangedDescription(it) }
             )
             Space()
             Button(
-                onClick = {},
+                onClick = {
+                    viewModel.saveWish(id) {
+                        navController.navigateUp()
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White
                 )
