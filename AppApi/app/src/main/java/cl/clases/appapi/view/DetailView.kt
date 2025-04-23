@@ -32,11 +32,18 @@ import cl.clases.appapi.viewModel.GamesViewModel
 fun DetailView(
     viewModel: GamesViewModel,
     navController: NavController,
-    id: Int
+    id: Int,
+    name: String?
 ) {
 
     LaunchedEffect(Unit) {
-        viewModel.getGameById(id)
+        if (id == 0) {
+            name?.let {
+                viewModel.getGameByName(it.replace(" ","-"))
+            }
+        } else {
+            viewModel.getGameById(id)
+        }
     }
 
     DisposableEffect(Unit) {
